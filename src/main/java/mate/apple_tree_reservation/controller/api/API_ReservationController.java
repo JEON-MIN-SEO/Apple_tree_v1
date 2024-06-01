@@ -76,7 +76,8 @@ public class API_ReservationController {
     }
 
     // 예약 가능한 시간 반환
-    @PostMapping("/available-times")
+    // http://localhost:8080/reservations/available-times
+    @GetMapping("/available-times")
     public List<AvailableTimeDTO> getAvailableTimes(@RequestBody ReservationRequestDTO request) {
         LocalDate reservationDate = LocalDate.parse(request.getDate());
         ReservationType reservationType = ReservationType.valueOf(request.getType().toUpperCase());
@@ -89,7 +90,8 @@ public class API_ReservationController {
 //        return reservationService.getAvailableTimes(reservationDate, reservationType);
 //    }
 
-    //이름으로 예약 조회(클라이언트) = 이름으로 어르신 id 찾은 후 그 id로 예약 정보 반환
+    // 이름으로 예약 조회(클라이언트)
+    // http://localhost:8080/reservations/by-name?name=
     @GetMapping("/by-name")
     public ResponseEntity<List<ReservationReturnDTO>> getReservationsByName(@RequestParam("name") String name) {
         ElderlyDTO elderly = elderlyService.findByName(name);
@@ -97,20 +99,27 @@ public class API_ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
-    //어드민 일정 조회
-    //{
-    //    "start": "2024-06-01",
-    //    "end": "2024-06-07"
-    //}
-    @PostMapping("date-range")
-    public ResponseEntity<List<ElderlyWithReservationsDTO>> getReservationsWithinDateRange(@RequestBody Map<String, String> dateRange) {
-        LocalDate startDate = LocalDate.parse(dateRange.get("start"));
-        LocalDate endDate = LocalDate.parse(dateRange.get("end"));
-        List<ElderlyWithReservationsDTO> result = reservationService.getReservationsWithinDateRange(startDate, endDate);
+    // 어드민 일정 조회
+    // http://localhost:8080/reservations/date-range
+    @GetMapping("/date-range")
+    public ResponseEntity<List<ReservationResponseDTO>> getReservationsWithinDateRange(@RequestBody DateRangeRequestDTO dateRangeRequest) {
+        LocalDate startDate = LocalDate.parse(dateRangeRequest.getStart());
+        LocalDate endDate = LocalDate.parse(dateRangeRequest.getEnd());
+        ReservationType reservationType = ReservationType.valueOf(dateRangeRequest.getReservationType().toUpperCase());
+
+        List<ReservationResponseDTO> result = reservationService.getReservationsWithinDateRange(startDate, endDate, reservationType);
         return ResponseEntity.ok(result);
     }
+//    @GetMapping("date-range")
+//    public ResponseEntity<List<ElderlyWithReservationsDTO>> getReservationsWithinDateRange(@RequestBody Map<String, String> dateRange) {
+//        LocalDate startDate = LocalDate.parse(dateRange.get("start"));
+//        LocalDate endDate = LocalDate.parse(dateRange.get("end"));
+//        List<ElderlyWithReservationsDTO> result = reservationService.getReservationsWithinDateRange(startDate, endDate);
+//        return ResponseEntity.ok(result);
+//    }
 
-    //어드민 예약 상세 정보 조회
+    // 어드민 예약 상세 정보 조회
+    // http://localhost:8080/reservations/detail
     @PostMapping("/detail")
     public ResponseEntity<?> getReservationsByTypeAndDate(@Valid @RequestBody ReservationRequestDTO request) {
         if (ReservationType.valueOf(request.getType().toUpperCase()) == ReservationType.VISIT) {

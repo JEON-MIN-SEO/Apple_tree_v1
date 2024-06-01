@@ -37,8 +37,8 @@ public class ReservationService {
 
     // 면회 예약 가능 시간대
     private static final List<LocalTime> VISIT_TIMES = Arrays.asList(
-            LocalTime.of(11, 30),
-            LocalTime.of(12, 0),
+            LocalTime.of(10, 30),
+            LocalTime.of(11, 0),
             LocalTime.of(14, 0),
             LocalTime.of(15, 0),
             LocalTime.of(16, 0)
@@ -46,8 +46,8 @@ public class ReservationService {
 
     // 외출 예약 가능 시간대
     private static final List<LocalTime> OUTING_TIMES = Arrays.asList(
-            LocalTime.of(11, 30),
-            LocalTime.of(12, 0),
+            LocalTime.of(10, 30),
+            LocalTime.of(11, 0),
             LocalTime.of(14, 0),
             LocalTime.of(14, 30),
             LocalTime.of(15, 0),
@@ -250,7 +250,7 @@ public class ReservationService {
         return availableTimes;
     }
 
-    //어르신 id로 예약 조회(클라이언트 조회)
+    // 어르신 id로 예약 조회(클라이언트 조회)
     public List<ReservationReturnDTO> getReservationsByElderlyId(Long elderlyId) {
         return reservationRepository.findByElderlyId(elderlyId).stream()
                 .map(reservation -> new ReservationReturnDTO(
@@ -262,32 +262,24 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    //어드민 일정 조회
-    public List<ElderlyWithReservationsDTO> getReservationsWithinDateRange(LocalDate startDate, LocalDate endDate) {
+    // 어드민 일정 조회
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> getReservationsWithinDateRange(LocalDate startDate, LocalDate endDate, ReservationType reservationType) {
         List<ReservationEntity> reservations = reservationRepository.findByReservationDateBetween(startDate, endDate);
 
-        Map<Long, List<ReservationDTO>> reservationsByElderlyId = reservations.stream()
-                .map(reservation -> new ReservationDTO(
-                        reservation.getReservationId(),
-                        reservation.getElderlyId(),
-                        reservation.getGuardianRelation(),
-                        reservation.getReservationType(),
-                        reservation.getReservationDate(),
-                        reservation.getReservationTime(),
-                        reservation.getMeal()
-                ))
-                .collect(Collectors.groupingBy(ReservationDTO::getElderlyId));
-
-        List<Long> elderlyIds = reservationsByElderlyId.keySet().stream().collect(Collectors.toList());
-        List<ElderlyEntity> elderlyList = elderlyRepository.findAllById(elderlyIds);
-
-        return elderlyList.stream()
-                .map(elderly -> new ElderlyWithReservationsDTO(
-                        elderly.getElderlyId(),
-                        elderly.getName(),
-                        elderly.getFloor(),
-                        reservationsByElderlyId.get(elderly.getElderlyId())
-                ))
+        return reservations.stream()
+                .filter(reservation -> reservation.getReservationType() == reservationType)
+                .map(reservation -> {
+                    ElderlyEntity elderly = reservation.getElderly();
+                    return new ReservationResponseDTO(
+                            elderly.getFloor(),
+                            elderly.getName(),
+                            reservation.getGuardianRelation(),
+                            reservation.getReservationDate(),
+                            reservation.getReservationTime(),
+                            reservation.getMeal().toString()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
