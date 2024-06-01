@@ -76,7 +76,7 @@ public class API_ReservationController {
 //        return reservationService.getAvailableTimes(reservationDate, reservationType);
 //    }
 
-    //이름으로 예약 조회
+    //이름으로 예약 조회(클라이언트) = 이름으로 어르신 id 찾은 후 그 id로 예약 정보 반환
     @GetMapping("/by-name")
     public ResponseEntity<List<ReservationReturnDTO>> getReservationsByName(@RequestParam("name") String name) {
         ElderlyDTO elderly = elderlyService.findByName(name);

@@ -175,7 +175,7 @@ public class ReservationService {
         if (reservationType == ReservationType.VISIT) {
             return count < 5; // 면회는 하루에 5팀 제한
         } else if (reservationType == ReservationType.OUTING) {
-            return count < 14; // 외출은 하루에 12팀 제한
+            return count < 14; // 외출은 하루에 14팀 제한
         }
         return false;
     }
@@ -226,6 +226,7 @@ public class ReservationService {
         return availableTimes;
     }
 
+    //어르신 id로 예약 조회(클라이언트 조회)
     public List<ReservationReturnDTO> getReservationsByElderlyId(Long elderlyId) {
         return reservationRepository.findByElderlyId(elderlyId).stream()
                 .map(reservation -> new ReservationReturnDTO(

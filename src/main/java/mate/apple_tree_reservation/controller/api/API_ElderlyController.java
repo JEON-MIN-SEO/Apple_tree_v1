@@ -48,4 +48,7 @@ public class API_ElderlyController {
         ElderlyDTO elderly = elderlyService.findByName(name);
         return ResponseEntity.ok(elderly.getElderlyId()); //http://localhost:8080/elderly/findByName?name=홍길순
     }
+
+    //입소자 명부 상세 화면
+    @GetMapping("/detail")
 }

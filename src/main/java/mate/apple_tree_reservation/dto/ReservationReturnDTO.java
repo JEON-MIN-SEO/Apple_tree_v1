@@ -9,6 +9,7 @@ import mate.apple_tree_reservation.enums.ReservationType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+//클라이언트 예약 조회 DTO
 @Getter
 @Setter
 @NoArgsConstructor
