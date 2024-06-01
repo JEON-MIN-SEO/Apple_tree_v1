@@ -1,9 +1,6 @@
 package mate.apple_tree_reservation.service;
 
-import mate.apple_tree_reservation.dto.AvailableTimeDTO;
-import mate.apple_tree_reservation.dto.ElderlyWithReservationsDTO;
-import mate.apple_tree_reservation.dto.ReservationDTO;
-import mate.apple_tree_reservation.dto.ReservationReturnDTO;
+import mate.apple_tree_reservation.dto.*;
 import mate.apple_tree_reservation.entity.ElderlyEntity;
 import mate.apple_tree_reservation.entity.ReservationEntity;
 import mate.apple_tree_reservation.enums.ReservationType;
@@ -55,12 +52,12 @@ public class ReservationService {
             LocalTime.of(16, 0)
     );
 
-    //어드민 예약 생성
+    //예약 생성
     @Transactional
     public void createReservation(ReservationDTO reservationDTO) {
         try {
             ReservationEntity reservationEntity = new ReservationEntity();
-            reservationEntity.setElderlyId(reservationDTO.getElderlyId());
+            reservationEntity.setElderlyId(reservationDTO.getElderlyId()); //감증까지 한번에
             reservationEntity.setGuardianRelation(reservationDTO.getGuardianRelation());
             reservationEntity.setReservationType(reservationDTO.getReservationType());
             reservationEntity.setReservationDate(reservationDTO.getReservationDate());
@@ -265,5 +262,45 @@ public class ReservationService {
                         reservationsByElderlyId.get(elderly.getElderlyId())
                 ))
                 .collect(Collectors.toList());
+    }
+
+    //
+    public List<VisitReservationDetailDTO> getVisitReservationsByDate(LocalDate reservationDate) {
+        List<ReservationEntity> reservations = reservationRepository.findByReservationDateAndReservationType(reservationDate, ReservationType.VISIT);
+        return reservations.stream()
+                .map(this::toVisitReservationDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<OutingReservationDetailDTO> getOutingReservationsByDate(LocalDate reservationDate) {
+        List<ReservationEntity> reservations = reservationRepository.findByReservationDateAndReservationType(reservationDate, ReservationType.OUTING);
+        return reservations.stream()
+                .map(this::toOutingReservationDTO)
+                .collect(Collectors.toList());
+    }
+
+    private VisitReservationDetailDTO toVisitReservationDTO(ReservationEntity reservation) {
+        VisitReservationDetailDTO dto = new VisitReservationDetailDTO();
+        dto.setElderlyId(reservation.getElderly().getElderlyId());
+        dto.setName(reservation.getElderly().getName());
+        dto.setFloor(reservation.getElderly().getFloor());
+        dto.setReservationId(reservation.getReservationId());
+        dto.setGuardianRelation(reservation.getGuardianRelation());
+        dto.setReservationDate(reservation.getReservationDate());
+        dto.setReservationTime(reservation.getReservationTime());
+        return dto;
+    }
+
+    private OutingReservationDetailDTO toOutingReservationDTO(ReservationEntity reservation) {
+        OutingReservationDetailDTO dto = new OutingReservationDetailDTO();
+        dto.setElderlyId(reservation.getElderly().getElderlyId());
+        dto.setName(reservation.getElderly().getName());
+        dto.setFloor(reservation.getElderly().getFloor());
+        dto.setReservationId(reservation.getReservationId());
+        dto.setGuardianRelation(reservation.getGuardianRelation());
+        dto.setReservationDate(reservation.getReservationDate());
+        dto.setReservationTime(reservation.getReservationTime());
+        dto.setMeal(reservation.getMeal());
+        return dto;
     }
 }

@@ -25,8 +25,13 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
 
-    @Column(nullable = false)
+    @Column(name = "elderly_id", nullable = false, insertable = false, updatable = false)
     private Long elderlyId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "elderly_id", nullable = false)
+    private ElderlyEntity elderly;
+
 
     @Column(nullable = false)
     private String guardianRelation;

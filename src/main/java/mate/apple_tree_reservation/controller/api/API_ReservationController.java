@@ -97,6 +97,20 @@ public class API_ReservationController {
         return ResponseEntity.ok(result);
     }
 
+    //어드민 예약 상세 정보 조회
+    @PostMapping("/detail")
+    public ResponseEntity<?> getReservationsByTypeAndDate(@Valid @RequestBody ReservationRequestDTO request) {
+        if (ReservationType.valueOf(request.getType().toUpperCase()) == ReservationType.VISIT) {
+            List<VisitReservationDetailDTO> reservations = reservationService.getVisitReservationsByDate(LocalDate.parse(request.getDate()));
+            return ResponseEntity.ok(reservations);
+        } else if (ReservationType.valueOf(request.getType().toUpperCase()) == ReservationType.OUTING) {
+            List<OutingReservationDetailDTO> reservations = reservationService.getOutingReservationsByDate(LocalDate.parse(request.getDate()));
+            return ResponseEntity.ok(reservations);
+        } else {
+            return ResponseEntity.badRequest().body("예약 타입이 일치하지 않습니다.");
+        }
+    }
+
 
     @Getter
     @Setter
@@ -107,4 +121,5 @@ public class API_ReservationController {
         private Long elderlyId;
         private String reservationType;
     }
+
 }

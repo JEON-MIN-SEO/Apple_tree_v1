@@ -15,20 +15,23 @@ public class API_ElderlyController {
     @Autowired
     private ElderlyService elderlyService;
 
-    //모두 조회
+    // 입소자 명부 모두 조회
+    // http://localhost:8080/elderly
     @GetMapping
     public List<ElderlyDTO> getAllElderly() {
-        return elderlyService.findAll(); //http://localhost:8080/elderly
+        return elderlyService.findAll();
     }
 
-    // 생성
+    // 입소자 명부 추가
+    // http://localhost:8080/elderly
     @PostMapping
     public ResponseEntity<Void> createElderly(@RequestBody ElderlyDTO elderly) {
         elderlyService.save(elderly);
-        return ResponseEntity.ok().build(); // http://localhost:8080/elderly
+        return ResponseEntity.ok().build();
     }
 
-    // 수정
+    // 입소자 명부 수정
+    // http://localhost:8080/elderly/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateElderly(@PathVariable("id") Long id, @RequestBody ElderlyDTO elderlyDetails) {
         elderlyService.updateElderly(id, elderlyDetails);
@@ -48,7 +51,4 @@ public class API_ElderlyController {
         ElderlyDTO elderly = elderlyService.findByName(name);
         return ResponseEntity.ok(elderly.getElderlyId()); //http://localhost:8080/elderly/findByName?name=홍길순
     }
-
-    //입소자 명부 상세 화면
-    @GetMapping("/detail")
 }
