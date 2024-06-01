@@ -8,6 +8,7 @@ import mate.apple_tree_reservation.exception.ResourceNotFoundException;
 import mate.apple_tree_reservation.repository.ElderlyRepository;
 import mate.apple_tree_reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +26,13 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ElderlyRepository elderlyRepository;
+    private final ElderlyService elderlyService;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository, ElderlyRepository elderlyRepository) {
+    public ReservationService(ReservationRepository reservationRepository, ElderlyRepository elderlyRepository, ElderlyService elderlyService) {
         this.reservationRepository = reservationRepository;
         this.elderlyRepository = elderlyRepository;
+        this.elderlyService = elderlyService;
     }
 
     // 면회 예약 가능 시간대
@@ -52,35 +55,59 @@ public class ReservationService {
             LocalTime.of(16, 0)
     );
 
-    //예약 생성
+    // 클라이언트(기본) 예약 생성
     @Transactional
     public void createReservation(ReservationDTO reservationDTO) {
         try {
+            // ElderlyEntity의 존재를 확인하여 참조 무결성을 유지 (Elderly를 사용하여 id를 저장하는 법)
+            //elderlyRepository.findById(reservationDTO.getElderlyId())
+            //        .orElseThrow(() -> new ResourceNotFoundException("해당 어르신을 찾지 못했습니다 id: " + reservationDTO.getElderlyId()));
+
             ReservationEntity reservationEntity = new ReservationEntity();
             reservationEntity.setElderlyId(reservationDTO.getElderlyId()); //감증까지 한번에
             reservationEntity.setGuardianRelation(reservationDTO.getGuardianRelation());
             reservationEntity.setReservationType(reservationDTO.getReservationType());
             reservationEntity.setReservationDate(reservationDTO.getReservationDate());
             reservationEntity.setReservationTime(reservationDTO.getReservationTime());
-            reservationEntity.setMeal(reservationDTO.getMeal());
+            reservationEntity.setMeal(reservationDTO.getMeal()); //Default
             reservationRepository.save(reservationEntity);
         } catch (Exception e) {
-            throw new RuntimeException("예약 정보를 저장하는 중 오류가 발생했습니다.", e);
+            // 예외를 던질 때 더 많은 디테일을 포함
+            throw new RuntimeException("예약 정보를 저장하는 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
     }
 
-    //예약 수정 어르신 id는 변경 불가
+    //어드민 예약 생성 (id 대신 이름을 입력)
+    @Transactional
+    public void createAdminReservation(AdminReservationDTO adminReservationDTO) {
+        try {
+            ElderlyDTO elderly = elderlyService.findByName(adminReservationDTO.getElderlyName());
+
+            ReservationEntity reservationEntity = new ReservationEntity();
+            reservationEntity.setElderlyId(elderly.getElderlyId());
+            reservationEntity.setGuardianRelation(adminReservationDTO.getGuardianRelation());
+            reservationEntity.setReservationType(adminReservationDTO.getReservationType());
+            reservationEntity.setReservationDate(adminReservationDTO.getReservationDate());
+            reservationEntity.setReservationTime(adminReservationDTO.getReservationTime());
+            reservationEntity.setMeal(adminReservationDTO.getMeal());
+            reservationRepository.save(reservationEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("예약 정보를 저장하는 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    // 예약 수정
     @Transactional
     public void updateReservation(Long reservationId, ReservationDTO reservationDTO) {
         try {
             ReservationEntity reservationEntity = reservationRepository.findById(reservationId)
                     .orElseThrow(() -> new ResourceNotFoundException("해당 예약을 찾지 못했습니다 id: " + reservationId));
-            reservationEntity.setElderlyId(reservationDTO.getElderlyId());// elderlyId는 고정으로 자동 입력
+            reservationEntity.setElderlyId(reservationDTO.getElderlyId()); // elderlyId는 고정으로 자동 입력
             reservationEntity.setGuardianRelation(reservationDTO.getGuardianRelation());
             reservationEntity.setReservationType(reservationDTO.getReservationType());
             reservationEntity.setReservationDate(reservationDTO.getReservationDate());
             reservationEntity.setReservationTime(reservationDTO.getReservationTime());
-            reservationEntity.setMeal(reservationDTO.getMeal());
+            reservationEntity.setMeal(reservationDTO.getMeal()); //Default
             reservationRepository.save(reservationEntity);
         } catch (Exception e) {
             throw new RuntimeException("예약 정보를 업데이트하는 중 오류가 발생했습니다.", e);

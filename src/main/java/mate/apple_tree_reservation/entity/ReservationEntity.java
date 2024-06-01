@@ -25,11 +25,13 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
 
-    @Column(name = "elderly_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "elderly_id", nullable = false)
     private Long elderlyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "elderly_id", nullable = false)
+    @JoinColumn(name = "elderly_id", nullable = false, insertable = false, updatable = false)
+    // insertable = false 생성 불가
+    // updatable = false 업데이트 불가
     private ElderlyEntity elderly;
 
 

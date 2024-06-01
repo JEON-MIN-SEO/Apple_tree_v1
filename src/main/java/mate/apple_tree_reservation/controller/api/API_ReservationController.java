@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/reservations")
+@RequestMapping("/reservations")
 public class API_ReservationController {
 
     private final ReservationService reservationService;
@@ -28,28 +28,41 @@ public class API_ReservationController {
         this.elderlyService = elderlyService;
     }
 
-    // 어드민 예약 생성
+    // 클라이언트(기본) 예약 생성
+    // http://localhost:8080/reservations
     @PostMapping
     public ResponseEntity<Void> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
         reservationService.createReservation(reservationDTO);
-        return ResponseEntity.ok().build(); // http://localhost:8080/reservation
+        return ResponseEntity.ok().build();
+    }
+
+    // 어드민 예약 생성
+    // http://localhost:8080/reservations/admin
+    // 어드민의 경우 시간 생성은 자유다. (but, front에서 제어해야함)
+    @PostMapping("/admin")
+    public ResponseEntity<Void> createReservation(@Valid @RequestBody AdminReservationDTO adminReservationDTO) {
+        reservationService.createAdminReservation(adminReservationDTO);
+        return ResponseEntity.ok().build();
     }
 
     // 예약 수정
+    // http://localhost:8080/reservations/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateReservation(@PathVariable("id") Long id, @Valid @RequestBody ReservationDTO reservationDTO) {
         reservationService.updateReservation(id, reservationDTO);
-        return ResponseEntity.ok().build(); // http://localhost:8080/reservation/{id}
+        return ResponseEntity.ok().build();
     }
 
     // 예약 삭제
+    // http://localhost:8080/reservations/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
         reservationService.deleteReservation(id);
-        return ResponseEntity.ok().build(); // http://localhost:8080/reservation/{id}
+        return ResponseEntity.ok().build();
     }
 
-    //예약 가능 날짜 확인 API
+    // 예약 가능 날짜 확인 API
+    // http://localhost:8080/reservations/available-dates
     @GetMapping("/available-dates")
     public ResponseEntity<List<LocalDate>> getAvailableDates(@RequestBody AvailableDatesRequest request) {
         List<LocalDate> availableDates = reservationService.findAvailableDates(
@@ -112,6 +125,7 @@ public class API_ReservationController {
     }
 
 
+    // 예약 가능 날짜 확인 Request 형식
     @Getter
     @Setter
     public static class AvailableDatesRequest {
@@ -121,5 +135,4 @@ public class API_ReservationController {
         private Long elderlyId;
         private String reservationType;
     }
-
 }

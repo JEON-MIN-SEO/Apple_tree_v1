@@ -21,7 +21,8 @@ public class ElderlyService {
         this.elderlyRepository = elderlyRepository;
     }
 
-    //명부 모두 가져오기
+    // 입소자 명부 모두 조회
+    // @GetMapping("elderly")
     @Transactional(readOnly = true)
     public List<ElderlyDTO> findAll() {
         try {
@@ -34,19 +35,8 @@ public class ElderlyService {
         }
     }
 
-    //이름으로 어르신 id 반환
-    @Transactional(readOnly = true)
-    public ElderlyDTO findByName(String name) {
-        try {
-            ElderlyEntity elderly = elderlyRepository.findByName(name)
-                    .orElseThrow(() -> new ResourceNotFoundException("해당 이름의 어르신을 찾지 못했습니다"));
-            return new ElderlyDTO(elderly.getElderlyId(), elderly.getName(), elderly.getFloor());
-        } catch (Exception e) {
-            throw new RuntimeException("해당 이름의 어르신을 찾지 못했습니다.", e);
-        }
-    }
-
     //어르신 명부 저장
+
     @Transactional
     public void save(ElderlyDTO elderlyDTO) {
         try {
@@ -59,8 +49,7 @@ public class ElderlyService {
         }
     }
 
-
-    //수정
+    // 어르신 명부 수정
     @Transactional
     public void updateElderly(Long id, ElderlyDTO elderlyDetails) {
         try {
@@ -74,7 +63,7 @@ public class ElderlyService {
         }
     }
 
-    //삭제
+    // 어르신 명부 삭제
     @Transactional
     public void deleteById(Long id) {
         try {
@@ -85,6 +74,18 @@ public class ElderlyService {
             }
         } catch (Exception e) {
             throw new RuntimeException("어르신 정보를 삭제하는 중 오류가 발생했습니다.", e);
+        }
+    }
+
+    //이름으로 어르신 id 반환
+    @Transactional(readOnly = true)
+    public ElderlyDTO findByName(String name) {
+        try {
+            ElderlyEntity elderly = elderlyRepository.findByName(name)
+                    .orElseThrow(() -> new ResourceNotFoundException("해당 이름의 어르신을 찾지 못했습니다"));
+            return new ElderlyDTO(elderly.getElderlyId(), elderly.getName(), elderly.getFloor());
+        } catch (Exception e) {
+            throw new RuntimeException("해당 이름의 어르신을 찾지 못했습니다.", e);
         }
     }
 }

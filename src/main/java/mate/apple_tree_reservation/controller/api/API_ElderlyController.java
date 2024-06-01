@@ -1,5 +1,6 @@
 package mate.apple_tree_reservation.controller.api;
 
+import jakarta.validation.Valid;
 import mate.apple_tree_reservation.dto.ElderlyDTO;
 import mate.apple_tree_reservation.service.ElderlyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class API_ElderlyController {
     // 입소자 명부 추가
     // http://localhost:8080/elderly
     @PostMapping
-    public ResponseEntity<Void> createElderly(@RequestBody ElderlyDTO elderly) {
+    public ResponseEntity<Void> createElderly(@Valid @RequestBody ElderlyDTO elderly) {
         elderlyService.save(elderly);
         return ResponseEntity.ok().build();
     }
@@ -33,22 +34,24 @@ public class API_ElderlyController {
     // 입소자 명부 수정
     // http://localhost:8080/elderly/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateElderly(@PathVariable("id") Long id, @RequestBody ElderlyDTO elderlyDetails) {
+    public ResponseEntity<Void> updateElderly(@PathVariable("id") Long id, @Valid @RequestBody ElderlyDTO elderlyDetails) {
         elderlyService.updateElderly(id, elderlyDetails);
-        return ResponseEntity.ok().build(); // http://localhost:8080/elderly/2
+        return ResponseEntity.ok().build();
     }
 
-    // 삭제
+    // 입소자 명부 삭제
+    // http://localhost:8080/elderly/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteElderly(@PathVariable("id") Long id) {
         elderlyService.deleteById(id);
-        return ResponseEntity.ok().build(); // http://localhost:8080/elderly/4
+        return ResponseEntity.ok().build();
     }
 
-    //이름으로 id 찾기
+    // 어르신 이름 검증
+    // http://localhost:8080/elderly/findByName?name={name}
     @GetMapping("/findByName")
     public ResponseEntity<Long> getElderlyIdByName(@RequestParam("name") String name) {
         ElderlyDTO elderly = elderlyService.findByName(name);
-        return ResponseEntity.ok(elderly.getElderlyId()); //http://localhost:8080/elderly/findByName?name=홍길순
+        return ResponseEntity.ok(elderly.getElderlyId());
     }
 }

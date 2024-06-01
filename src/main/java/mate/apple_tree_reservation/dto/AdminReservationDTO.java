@@ -8,19 +8,19 @@ import mate.apple_tree_reservation.enums.ReservationType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-// 예약 DTO(기본, 클라이언트)
+// 예약 DTO(어드민)
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor // 기본 생성자
 @AllArgsConstructor // 모든 필드를 매개변수로 하는 생성자
 @Builder
-public class ReservationDTO {
+public class AdminReservationDTO {
 
     private Long reservationId;
 
-    @NotNull(message = "Elderly ID는 필수 항목입니다.")
-    private Long elderlyId;
+    @NotNull(message = "Elderly Name는 필수 항목입니다.")
+    private String elderlyName;
 
     @NotNull(message = "Guardian relation은 필수 항목입니다.")
     private String guardianRelation;
@@ -37,4 +37,3 @@ public class ReservationDTO {
     @Builder.Default
     private MealType meal = MealType.DEFAULT; // 기본값 설정
 }
-
