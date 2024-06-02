@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("reservation")
+@RequestMapping("reservations")
 public class API_ReservationController {
 
     private final ReservationService reservationService;
