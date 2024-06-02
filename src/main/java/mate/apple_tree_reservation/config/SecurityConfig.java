@@ -1,4 +1,4 @@
-package mate.apple_tree_reservation.controller.config;
+package mate.apple_tree_reservation.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
