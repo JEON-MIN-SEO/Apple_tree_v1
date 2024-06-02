@@ -3,6 +3,7 @@ package mate.apple_tree_reservation.controller.api;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import mate.apple_tree_reservation.dto.*;
 import mate.apple_tree_reservation.enums.ReservationType;
 import mate.apple_tree_reservation.service.ElderlyService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/reservation")
 public class API_ReservationController {
