@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-//어드민 면회 상세 예약 정보 DTO
+// 어드민 면회 상세 예약 정보 DTO
 @Getter
 @Setter
 public class VisitReservationDetailDTO {

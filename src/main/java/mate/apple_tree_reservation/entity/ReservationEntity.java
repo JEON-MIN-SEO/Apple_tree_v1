@@ -34,7 +34,6 @@ public class ReservationEntity {
     // updatable = false 업데이트 불가
     private ElderlyEntity elderly;
 
-
     @Column(nullable = false)
     private String guardianRelation;
 

@@ -8,7 +8,6 @@ import mate.apple_tree_reservation.exception.ResourceNotFoundException;
 import mate.apple_tree_reservation.repository.ElderlyRepository;
 import mate.apple_tree_reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +76,7 @@ public class ReservationService {
         }
     }
 
-    //어드민 예약 생성 (id 대신 이름을 입력)
+    // 어드민 예약 생성 (id 대신 이름을 입력)
     @Transactional
     public void createAdminReservation(AdminReservationDTO adminReservationDTO) {
         try {
