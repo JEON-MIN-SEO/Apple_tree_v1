@@ -78,7 +78,7 @@ public class API_ReservationController {
 
     // 예약 가능한 시간 반환
     // http://localhost:8080/reservations/available-times
-    @GetMapping("/available-times")
+    @PostMapping("/available-times")
     public List<AvailableTimeDTO> getAvailableTimes(@RequestBody ReservationRequestDTO request) {
         LocalDate reservationDate = LocalDate.parse(request.getDate());
         ReservationType reservationType = ReservationType.valueOf(request.getType().toUpperCase());
