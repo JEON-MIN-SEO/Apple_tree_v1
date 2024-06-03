@@ -64,7 +64,7 @@ public class API_ReservationController {
 
     // 예약 가능 날짜 확인 API
     // http://localhost:8080/reservations/available-dates
-    @GetMapping("/available-dates")
+    @PostMapping("/available-dates")
     public ResponseEntity<List<LocalDate>> getAvailableDates(@RequestBody AvailableDatesRequest request) {
         List<LocalDate> availableDates = reservationService.findAvailableDates(
                 request.getStartDate(),
