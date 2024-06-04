@@ -102,7 +102,7 @@ public class API_ReservationController {
 
     // 어드민 일정 조회
     // http://localhost:8080/reservations/date-range
-    @GetMapping("/date-range")
+    @PostMapping("/date-range")
     public ResponseEntity<List<ReservationResponseDTO>> getReservationsWithinDateRange(@RequestBody DateRangeRequestDTO dateRangeRequest) {
         LocalDate startDate = LocalDate.parse(dateRangeRequest.getStart());
         LocalDate endDate = LocalDate.parse(dateRangeRequest.getEnd());
