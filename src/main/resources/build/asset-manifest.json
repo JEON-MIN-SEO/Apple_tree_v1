@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e6c13ad2.css",
+    "main.js": "/static/js/main.11e3c46f.js",
+    "static/media/apple-tree.jpeg": "/static/media/apple-tree.84dbcca0e82e491a64b2.jpeg",
+    "static/media/coin.png": "/static/media/coin.ed26899db62be9fbaa2e.png",
+    "index.html": "/index.html",
+    "main.e6c13ad2.css.map": "/static/css/main.e6c13ad2.css.map",
+    "main.11e3c46f.js.map": "/static/js/main.11e3c46f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.11e3c46f.js"
+  ]
+}
